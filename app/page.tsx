@@ -7,22 +7,22 @@ import ImageTracer from "imagetracerjs"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-import { Slider } from "@/components/ui/slider" // Import Slider component
+import { Slider } from "@/components/ui/slider"
 import { Upload, Download, Code } from "lucide-react"
 
 export default function Home() {
   const [svgData, setSvgData] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
-  const [smoothness, setSmoothness] = useState<number[]>([50]) // Default smoothness 0-100
+  const [blurRadius, setBlurRadius] = useState<number[]>([1]) // Default blur radius 1 (0-5 range)
+  const [debouncedBlurRadius, setDebouncedBlurRadius] = useState<number>(1) // Debounced value for tracing
   const imageDataUrlRef = useRef<string | null>(null) // To store the base64 image data
 
-  const traceImage = useCallback((dataUrl: string, currentSmoothness: number) => {
+  const traceImage = useCallback((dataUrl: string, currentBlurRadius: number) => {
     setIsConverting(true)
-    // Map slider value (0-100) to ltres/qtres (0.1-10)
-    // Higher slider value = higher ltres/qtres = more smoothness (less detail)
-    const ltresValue = 0.1 + (currentSmoothness / 100) * (10 - 0.1)
-    const qtresValue = ltresValue // Use the same value for both
+    // Fixed ltres and qtres to very low values for maximum detail retention
+    const ltresValue = 0.01
+    const qtresValue = 0.01
 
     ImageTracer.imageToSVG(
       dataUrl,
@@ -31,10 +31,13 @@ export default function Home() {
         setIsConverting(false)
       },
       {
-        ltres: ltresValue,
-        qtres: qtresValue,
-        pathomit: 1,
-        blurradius: 1,
+        ltres: ltresValue, // Fixed to very low for detail
+        qtres: qtresValue, // Fixed to very low for detail
+        pathomit: 1, // Keep small paths
+        blurradius: currentBlurRadius, // Controlled by slider
+        colors: 256, // Preserve color fidelity
+        strokewidth: 0, // Ensure filled shapes, no outlines
+        linefilter: true, // Apply line filter for smoother lines
       },
     )
   }, [])
@@ -48,13 +51,16 @@ export default function Home() {
 
       setSvgData(null)
       setIsEditing(false)
-      setSmoothness([50]) // Reset smoothness on new upload
+      setBlurRadius([1]) // Reset blur radius on new upload
+      setDebouncedBlurRadius(1) // Reset debounced blur radius
 
       reader.onload = (event) => {
         if (!event.target?.result) return
 
         const img = new Image()
         img.onload = () => {
+          // Set crossOrigin to "anonymous" to avoid CORS issues when drawing image to canvas
+          img.crossOrigin = "anonymous"
           const canvas = document.createElement("canvas")
           const ctx = canvas.getContext("2d")
           if (!ctx) return
@@ -65,22 +71,33 @@ export default function Home() {
 
           const dataUrl = canvas.toDataURL()
           imageDataUrlRef.current = dataUrl // Store the image data URL
-          traceImage(dataUrl, smoothness[0]) // Initial trace with default smoothness
+          traceImage(dataUrl, blurRadius[0]) // Initial trace with default blur radius
         }
         img.src = event.target.result as string
       }
 
       reader.readAsDataURL(file)
     },
-    [traceImage, smoothness],
+    [traceImage, blurRadius],
   )
 
-  // Re-trace when smoothness changes, if an image is already loaded
+  // Debounce effect for blurRadius
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedBlurRadius(blurRadius[0])
+    }, 300) // 300ms debounce delay
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [blurRadius])
+
+  // Effect to re-trace when debouncedBlurRadius changes, if an image is already loaded and not currently converting
   useEffect(() => {
     if (imageDataUrlRef.current && !isConverting) {
-      traceImage(imageDataUrlRef.current, smoothness[0])
+      traceImage(imageDataUrlRef.current, debouncedBlurRadius)
     }
-  }, [smoothness, traceImage]) // Removed isConverting from dependency array to avoid infinite loop
+  }, [debouncedBlurRadius, traceImage, isConverting])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -151,16 +168,16 @@ export default function Home() {
               </div>
 
               <div className="w-full mb-6 px-4">
-                <label htmlFor="smoothness-slider" className="block text-sm font-medium text-gray-700 mb-2">
-                  Smoothness: {smoothness[0]}
+                <label htmlFor="blur-radius-slider" className="block text-sm font-medium text-gray-700 mb-2">
+                  Blur Radius: {blurRadius[0]}
                 </label>
                 <Slider
-                  id="smoothness-slider"
+                  id="blur-radius-slider"
                   min={0}
-                  max={100}
-                  step={1}
-                  value={smoothness}
-                  onValueChange={setSmoothness}
+                  max={5}
+                  step={0.1}
+                  value={blurRadius}
+                  onValueChange={setBlurRadius}
                   className="w-full"
                 />
               </div>
