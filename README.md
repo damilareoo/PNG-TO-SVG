@@ -1,29 +1,40 @@
 # PNG to SVG Converter
 
-Convert **PNG images to clean, editable SVGs** right in your browser — no upload, no server.
+Convert any PNG, JPG, or WebP image to a clean, editable SVG vector — free, instant, no signup.
 
-🔗 **[Try it live](https://png-to-svg-converter.vercel.app)**
+🔗 **[Try it live → v0-png-to-svg.vercel.app](https://v0-png-to-svg.vercel.app)**
 
 ---
 
 ## What It Does
 
-Upload a PNG image and get a downloadable, editable SVG back — instantly. All processing happens client-side.
+Upload an image and get a downloadable SVG in seconds. Three conversion modes adapt to your image type, with optional AI background removal (via Replicate) for cleaner results on logos and icons.
+
+## Features
+
+- 🖼️ **Three conversion modes** — Logo/Icon, Photo, Line Art
+- ⚙️ **Color count control** — 2 to 128 colors
+- 🤖 **AI background removal** — via Replicate (optional, requires API key)
+- 🧼 **Client-side white BG removal** — works without any API key
+- 📋 **Copy SVG code** — paste into Figma, code, or design tools
+- ↕️ **Side-by-side preview** — original vs vector with transparent checkerboard
+- 📱 **Fully responsive**
 
 ## Tech Stack
 
 | Tool | Purpose |
 |------|---------|
-| Next.js | React framework |
+| Next.js 15 | React framework |
 | TypeScript | Type safety |
-| ImageTracer.js | PNG → SVG tracing algorithm |
+| ImageTracer.js | Client-side PNG → SVG tracing |
+| Replicate API | AI background removal (optional) |
 | Tailwind CSS | Styling |
 | Vercel | Deployment |
 
 ## Getting Started
 
 ```bash
-# 1. Clone the repo
+# 1. Clone
 git clone https://github.com/damilareoo/PNG-TO-SVG.git
 cd PNG-TO-SVG
 
@@ -34,13 +45,26 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-## How It Works
+## Optional: AI Background Removal
 
-1. Upload your PNG
-2. The app uses [ImageTracer.js](https://github.com/jankovicsandras/imagetracerjs) to trace the bitmap into vector paths
-3. Download the resulting SVG file
+1. Get a free API key at [replicate.com](https://replicate.com)
+2. Create `.env.local`:
+   ```env
+   REPLICATE_API_TOKEN=your_token_here
+   ```
+3. Restart dev server — "Remove BG (AI)" button activates automatically
+
+Without the key, the app falls back to client-side white background removal.
+
+## Conversion Modes
+
+| Mode | Best for | Colors | Preprocessing |
+|------|----------|--------|---------------|
+| **Logo / Icon** | Logos, flat art, icons | 2–32 | High contrast + sharpen |
+| **Photo** | Photographs, complex images | 2–128 | Light contrast |
+| **Line Art** | Sketches, drawings, outlines | 2–32 | Max contrast + sharpen |
 
 ---
 

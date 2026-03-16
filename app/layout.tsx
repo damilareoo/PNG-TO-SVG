@@ -1,14 +1,22 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { GeistSans } from "geist/font/sans"
 import "./globals.css"
-import { Inter } from "next/font/google"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "PNG to SVG Converter",
-  description: "Convert PNG and JPEG images to SVG vectors instantly",
-    generator: 'v0.app'
+  title: "PNG to SVG — Free Converter",
+  description: "Convert any PNG, JPG, or WebP image to a clean, editable SVG vector. Multiple modes for logos, photos, and line art.",
+  openGraph: {
+    title: "PNG to SVG Converter",
+    description: "Convert any PNG to a clean, editable SVG vector. Free, instant, no signup.",
+    images: ["/png-to-svg-logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PNG to SVG Converter",
+    description: "Convert any PNG to a clean, editable SVG vector. Free, instant, no signup.",
+    images: ["/png-to-svg-logo.png"],
+  },
 }
 
 export default function RootLayout({
@@ -17,17 +25,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <meta property="og:image" content="/png-to-svg-logo.png" />
-        <meta property="og:title" content="PNG to SVG Converter" />
-        <meta property="og:description" content="Convert PNG/JPEG images to editable SVG vectors instantly." />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="PNG to SVG Converter" />
-        <meta name="twitter:description" content="Convert PNG/JPEG images to editable SVG vectors instantly." />
-        <meta name="twitter:image" content="/png-to-svg-logo.png" />
-      </head>
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={GeistSans.className}>
+      <body>{children}</body>
     </html>
   )
 }
