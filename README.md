@@ -2,7 +2,7 @@
 
 Convert any PNG, JPG, or WebP image to a clean, editable SVG vector — free, instant, no signup.
 
-🔗 **[Try it live → v0-png-to-svg.vercel.app](https://v0-png-to-svg.vercel.app)**
+**[Try it live → v0-png-to-svg.vercel.app](https://v0-png-to-svg.vercel.app)**
 
 ---
 
@@ -12,14 +12,14 @@ Upload an image and get a downloadable SVG in seconds. Three conversion modes ad
 
 ## Features
 
-- 🖼️ **Three conversion modes** — Logo/Icon, Photo, Line Art
-- ⚙️ **Color count control** — 2 to 128 colors
-- 🤖 **AI background removal** — via Replicate (optional, requires API key)
-- 🧼 **Client-side white BG removal** — works without any API key
-- 📋 **Copy SVG code** — paste into Figma, code, or design tools
-- ↕️ **Side-by-side preview** — original vs vector with transparent checkerboard
-- 🎛️ **Persistent controls sidebar** — mode, colors, and BG removal always visible on desktop
-- 📱 **Fully responsive** — stacked controls panel on mobile
+- Three conversion modes — Logo/Icon, Photo, Line Art
+- Color count control — 2 to 128 colors
+- AI background removal via Replicate (optional, requires API key)
+- Client-side white background removal — works without any API key
+- Copy SVG code — paste into Figma, code, or design tools
+- Side-by-side preview — original vs vector with transparent checkerboard
+- Persistent controls sidebar — mode, colors, and background removal always visible on desktop
+- Fully responsive — stacked controls panel on mobile
 
 ## Tech Stack
 
@@ -27,7 +27,7 @@ Upload an image and get a downloadable SVG in seconds. Three conversion modes ad
 |------|---------|
 | Next.js 15 | React framework |
 | TypeScript | Type safety |
-| ImageTracer.js | Client-side PNG → SVG tracing |
+| ImageTracer.js | Client-side PNG to SVG tracing |
 | Replicate API | AI background removal (optional) |
 | Tailwind CSS | Styling |
 | Vercel | Deployment |
@@ -35,14 +35,14 @@ Upload an image and get a downloadable SVG in seconds. Three conversion modes ad
 ## Getting Started
 
 ```bash
-# 1. Clone
+# Clone
 git clone https://github.com/damilareoo/PNG-TO-SVG.git
 cd PNG-TO-SVG
 
-# 2. Install dependencies
+# Install dependencies
 pnpm install
 
-# 3. Run locally
+# Run locally
 pnpm dev
 ```
 
@@ -55,7 +55,7 @@ Open [http://localhost:3000](http://localhost:3000).
    ```env
    REPLICATE_API_TOKEN=your_token_here
    ```
-3. Restart dev server — "Remove BG (AI)" button activates automatically
+3. Restart dev server — the "Remove BG (AI)" button activates automatically
 
 Without the key, the app falls back to client-side white background removal.
 
@@ -63,9 +63,9 @@ Without the key, the app falls back to client-side white background removal.
 
 | Mode | Best for | Colors | Preprocessing |
 |------|----------|--------|---------------|
-| **Logo / Icon** | Logos, flat art, icons | 2–32 | High contrast + sharpen |
-| **Photo** | Photographs, complex images | 2–128 | Light contrast |
-| **Line Art** | Sketches, drawings, outlines | 2–32 | Max contrast + sharpen |
+| Logo / Icon | Logos, flat art, icons | 2–32 | High contrast + sharpen |
+| Photo | Photographs, complex images | 2–128 | Light contrast |
+| Line Art | Sketches, drawings, outlines | 2–32 | Max contrast + sharpen |
 
 ---
 
