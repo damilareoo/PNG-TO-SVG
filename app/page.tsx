@@ -70,7 +70,7 @@ export default function Home() {
           contrast: p.preprocess.contrast,
           brightness: p.preprocess.brightness,
           sharpen: p.preprocess.sharpen,
-          scale: 2,
+          scale: 1,
         })
 
         processedDataUrlRef.current = processed

@@ -5,17 +5,18 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "PNG to SVG — Free Converter",
-  description: "Convert any PNG, JPG, or WebP image to a clean, editable SVG vector. Multiple modes for logos, photos, and line art.",
+  description: "Convert any PNG, JPG, or WebP image to a clean, editable SVG vector. Free, instant, no signup.",
   openGraph: {
-    title: "PNG to SVG Converter",
-    description: "Convert any PNG to a clean, editable SVG vector. Free, instant, no signup.",
-    images: ["/png-to-svg-logo.png"],
+    title: "PNG to SVG",
+    description: "Convert any image to a clean, editable vector — instantly.",
+    url: "https://v0-png-to-svg.vercel.app",
+    siteName: "PNG to SVG",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PNG to SVG Converter",
-    description: "Convert any PNG to a clean, editable SVG vector. Free, instant, no signup.",
-    images: ["/png-to-svg-logo.png"],
+    title: "PNG to SVG",
+    description: "Convert any image to a clean, editable vector — instantly.",
   },
 }
 
