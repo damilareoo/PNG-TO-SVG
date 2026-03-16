@@ -18,7 +18,8 @@ Upload an image and get a downloadable SVG in seconds. Three conversion modes ad
 - 🧼 **Client-side white BG removal** — works without any API key
 - 📋 **Copy SVG code** — paste into Figma, code, or design tools
 - ↕️ **Side-by-side preview** — original vs vector with transparent checkerboard
-- 📱 **Fully responsive**
+- 🎛️ **Persistent controls sidebar** — mode, colors, and BG removal always visible on desktop
+- 📱 **Fully responsive** — stacked controls panel on mobile
 
 ## Tech Stack
 

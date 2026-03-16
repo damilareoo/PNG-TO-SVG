@@ -189,14 +189,14 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleReset}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs text-[#555] hover:text-[#999] hover:bg-[#141414] transition-all"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs text-[#555] hover:text-[#999] hover:bg-[#141414] transition-all cursor-pointer"
             >
               <RotateCcw size={12} />
               New image
             </button>
             <button
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white text-black text-xs font-medium hover:bg-[#e0e0e0] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white text-black text-xs font-medium hover:bg-[#e0e0e0] transition-colors cursor-pointer"
             >
               <Download size={12} />
               Download SVG
@@ -223,7 +223,7 @@ export default function Home() {
               <button
                 key={p}
                 onClick={() => { setPreset(p); setColors(PRESETS[p].defaultColors) }}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   preset === p
                     ? "bg-[#1f1f1f] text-[#e0e0e0]"
                     : "text-[#444] hover:text-[#777]"
@@ -272,74 +272,94 @@ export default function Home() {
 
       {/* Result */}
       {stage === "done" && svgData && originalUrl && (
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex min-h-0">
 
-          {/* Mobile preview toggle */}
-          <div className="flex sm:hidden items-center gap-1 px-4 pt-3 pb-2 shrink-0">
-            {(["split", "original", "vector"] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setPreviewMode(m)}
-                className={`flex-1 py-1.5 rounded-md text-[11px] capitalize transition-colors ${
-                  previewMode === m ? "bg-[#1a1a1a] text-[#c8c8c8]" : "text-[#444]"
-                }`}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
+          {/* Main area: preview panels + code panel + mobile controls */}
+          <div className="flex-1 flex flex-col min-h-0">
 
-          {/* Panels */}
-          <div className="flex-1 flex flex-col sm:flex-row gap-px bg-[#141414] min-h-0 overflow-hidden">
+            {/* Mobile preview toggle */}
+            <div className="flex sm:hidden items-center gap-1 px-4 pt-3 pb-2 shrink-0">
+              {(["split", "original", "vector"] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setPreviewMode(m)}
+                  className={`flex-1 py-1.5 rounded-md text-[11px] capitalize transition-colors cursor-pointer ${
+                    previewMode === m ? "bg-[#1a1a1a] text-[#c8c8c8]" : "text-[#444]"
+                  }`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
 
-            {(previewMode === "split" || previewMode === "original") && (
-              <div className="flex-1 flex flex-col bg-[#0c0c0c] min-w-0 min-h-0">
-                <div className="flex items-center px-4 h-9 border-b border-[#141414] shrink-0">
-                  <span className="text-[10px] text-[#333] uppercase tracking-widest font-medium">Original</span>
+            {/* Panels */}
+            <div className="flex-1 flex flex-col sm:flex-row gap-px bg-[#141414] min-h-0 overflow-hidden">
+
+              {(previewMode === "split" || previewMode === "original") && (
+                <div className="flex-1 flex flex-col bg-[#0c0c0c] min-w-0 min-h-0">
+                  <div className="flex items-center px-4 h-9 border-b border-[#141414] shrink-0">
+                    <span className="text-[10px] text-[#333] uppercase tracking-widest font-medium">Original</span>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center p-6 overflow-auto">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={originalUrl}
+                      alt="Original"
+                      className="max-w-full max-h-full object-contain"
+                      style={{ maxHeight: "calc(100vh - 200px)" }}
+                    />
+                  </div>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-6 overflow-auto">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={originalUrl}
-                    alt="Original"
-                    className="max-w-full max-h-full object-contain"
-                    style={{ maxHeight: "calc(100vh - 240px)" }}
-                  />
+              )}
+
+              {(previewMode === "split" || previewMode === "vector") && (
+                <div className="flex-1 flex flex-col bg-[#0c0c0c] min-w-0 min-h-0">
+                  <div className="flex items-center justify-between px-4 h-9 border-b border-[#141414] shrink-0">
+                    <span className="text-[10px] text-[#333] uppercase tracking-widest font-medium">Vector</span>
+                    <span className="text-[10px] text-[#2a2a2a]">{svgSize}</span>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center p-6 overflow-auto checkerboard">
+                    <div
+                      className="max-w-full max-h-full"
+                      style={{ maxHeight: "calc(100vh - 200px)" }}
+                      dangerouslySetInnerHTML={{ __html: svgData }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Code panel */}
+            {showCode && (
+              <div className="border-t border-[#141414] px-4 py-3 shrink-0 bg-[#0c0c0c]">
+                <textarea
+                  readOnly
+                  value={svgData}
+                  className="w-full h-36 text-[10.5px] font-mono text-[#555] bg-[#090909] border border-[#181818] rounded-lg px-3 py-2.5 resize-none focus:outline-none leading-relaxed"
+                />
+                <div className="flex justify-end mt-1.5">
+                  <button
+                    onClick={() => navigator.clipboard.writeText(svgData)}
+                    className="text-[11px] text-[#444] hover:text-[#777] transition-colors cursor-pointer"
+                  >
+                    Copy SVG
+                  </button>
                 </div>
               </div>
             )}
 
-            {(previewMode === "split" || previewMode === "vector") && (
-              <div className="flex-1 flex flex-col bg-[#0c0c0c] min-w-0 min-h-0">
-                <div className="flex items-center justify-between px-4 h-9 border-b border-[#141414] shrink-0">
-                  <span className="text-[10px] text-[#333] uppercase tracking-widest font-medium">Vector</span>
-                  <span className="text-[10px] text-[#2a2a2a]">{svgSize}</span>
-                </div>
-                <div className="flex-1 flex items-center justify-center p-6 overflow-auto checkerboard">
-                  <div
-                    className="max-w-full max-h-full"
-                    style={{ maxHeight: "calc(100vh - 240px)" }}
-                    dangerouslySetInnerHTML={{ __html: svgData }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Controls */}
-          <div className="border-t border-[#141414] bg-[#0c0c0c] shrink-0">
-            <div className="flex flex-wrap items-center gap-3 px-4 py-3">
-
+            {/* Mobile controls (visible only on mobile) */}
+            <div className="sm:hidden border-t border-[#1a1a1a] bg-[#0e0e0e] p-4 shrink-0">
               {/* Mode */}
-              <div className="flex items-center gap-0.5 bg-[#111] rounded-lg p-0.5">
+              <div className="flex gap-1 bg-[#141414] rounded-lg p-1 mb-4">
                 {(["logo", "photo", "lineart"] as PresetKey[]).map((p) => (
                   <button
                     key={p}
                     onClick={() => handlePresetChange(p)}
-                    className={`px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all ${
+                    className={`flex-1 py-2 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       preset === p
-                        ? "bg-[#1e1e1e] text-[#d0d0d0]"
-                        : "text-[#3a3a3a] hover:text-[#666]"
+                        ? "bg-[#262626] text-[#d8d8d8]"
+                        : "text-[#555] hover:text-[#888]"
                     }`}
                   >
                     {PRESETS[p].label}
@@ -348,8 +368,11 @@ export default function Home() {
               </div>
 
               {/* Colors */}
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[11px] text-[#333] w-16 shrink-0">Colors {colors}</span>
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[12px] text-[#888] font-medium">Colors</span>
+                  <span className="text-[12px] font-semibold text-[#aaa]">{colors}</span>
+                </div>
                 <input
                   type="range"
                   min={minColors}
@@ -357,11 +380,11 @@ export default function Home() {
                   step={preset === "photo" ? 4 : 1}
                   value={colors}
                   onChange={handleColorsChange}
-                  onMouseUp={handleColorsCommit}
+                  onMouseUp={handleColorsCommit as any}
                   onTouchEnd={handleColorsCommit as any}
-                  className="w-28 h-0.5 cursor-pointer appearance-none rounded"
+                  className="w-full h-0.5 cursor-pointer appearance-none rounded"
                   style={{
-                    background: `linear-gradient(to right, #555 0%, #555 ${colorsPercent}%, #222 ${colorsPercent}%, #222 100%)`,
+                    background: `linear-gradient(to right, #666 0%, #666 ${colorsPercent}%, #222 ${colorsPercent}%, #222 100%)`,
                     accentColor: "#e8e8e8",
                   }}
                 />
@@ -371,41 +394,109 @@ export default function Home() {
               <button
                 onClick={handleRemoveBg}
                 disabled={aiLoading}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] text-[#3a3a3a] hover:text-[#888] hover:bg-[#141414] border border-[#181818] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-[13px] font-medium text-[#999] hover:text-[#ccc] bg-[#141414] hover:bg-[#1a1a1a] border border-[#222] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer mb-2"
               >
-                <Sparkles size={11} className={aiLoading ? "animate-pulse" : ""} />
+                <Sparkles size={13} className={aiLoading ? "animate-pulse" : ""} />
                 {aiLoading ? "Removing…" : aiAvailable ? "Remove BG (AI)" : "Remove White BG"}
               </button>
 
-              {/* Code toggle */}
+              {/* View code */}
               <button
                 onClick={() => setShowCode((s) => !s)}
-                className="ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] text-[#333] hover:text-[#777] hover:bg-[#141414] transition-all"
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-[13px] font-medium transition-all cursor-pointer ${
+                  showCode
+                    ? "bg-[#1d1d1d] text-[#c8c8c8] border border-[#2a2a2a]"
+                    : "text-[#666] hover:text-[#999] border border-transparent"
+                }`}
               >
-                <Code2 size={11} />
+                <Code2 size={13} />
                 {showCode ? "Hide code" : "View code"}
-                {showCode ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
               </button>
             </div>
+          </div>
 
-            {/* Code panel */}
-            {showCode && (
-              <div className="border-t border-[#141414] px-4 py-3">
-                <textarea
-                  readOnly
-                  value={svgData}
-                  className="w-full h-36 text-[10.5px] font-mono text-[#444] bg-[#090909] border border-[#181818] rounded-lg px-3 py-2.5 resize-none focus:outline-none leading-relaxed"
-                />
-                <div className="flex justify-end mt-1.5">
-                  <button
-                    onClick={() => navigator.clipboard.writeText(svgData)}
-                    className="text-[11px] text-[#333] hover:text-[#666] transition-colors"
-                  >
-                    Copy SVG
-                  </button>
+          {/* Desktop controls sidebar (hidden on mobile) */}
+          <div className="hidden sm:flex w-[196px] border-l border-[#181818] bg-[#0c0c0c] flex-col shrink-0">
+            <div className="flex-1 p-4 flex flex-col gap-6 overflow-y-auto">
+
+              {/* Mode section */}
+              <div>
+                <p className="text-[10px] text-[#484848] uppercase tracking-wider font-medium mb-2.5">Mode</p>
+                <div className="flex flex-col gap-0.5">
+                  {(["logo", "photo", "lineart"] as PresetKey[]).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => handlePresetChange(p)}
+                      className={`px-3 py-2 rounded-lg text-left text-[12px] font-medium transition-all cursor-pointer ${
+                        preset === p
+                          ? "bg-[#1d1d1d] text-[#d8d8d8]"
+                          : "text-[#666] hover:text-[#aaa] hover:bg-[#141414]"
+                      }`}
+                    >
+                      {PRESETS[p].label}
+                    </button>
+                  ))}
                 </div>
               </div>
-            )}
+
+              {/* Colors section */}
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <p className="text-[10px] text-[#484848] uppercase tracking-wider font-medium">Colors</p>
+                  <span className="text-[13px] font-semibold text-[#888]">{colors}</span>
+                </div>
+                <input
+                  type="range"
+                  min={minColors}
+                  max={maxColors}
+                  step={preset === "photo" ? 4 : 1}
+                  value={colors}
+                  onChange={handleColorsChange}
+                  onMouseUp={handleColorsCommit as any}
+                  onTouchEnd={handleColorsCommit as any}
+                  className="w-full h-0.5 cursor-pointer appearance-none rounded"
+                  style={{
+                    background: `linear-gradient(to right, #666 0%, #666 ${colorsPercent}%, #222 ${colorsPercent}%, #222 100%)`,
+                    accentColor: "#e8e8e8",
+                  }}
+                />
+                <div className="flex justify-between mt-1.5">
+                  <span className="text-[10px] text-[#333]">{minColors}</span>
+                  <span className="text-[10px] text-[#333]">{maxColors}</span>
+                </div>
+              </div>
+
+              {/* Background section */}
+              <div>
+                <p className="text-[10px] text-[#484848] uppercase tracking-wider font-medium mb-2.5">Background</p>
+                <button
+                  onClick={handleRemoveBg}
+                  disabled={aiLoading}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[12px] font-medium text-[#888] hover:text-[#ccc] bg-[#141414] hover:bg-[#1a1a1a] border border-[#222] hover:border-[#2a2a2a] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <Sparkles size={12} className={aiLoading ? "animate-pulse" : ""} />
+                  {aiLoading ? "Removing…" : aiAvailable ? "Remove BG (AI)" : "Remove White BG"}
+                </button>
+              </div>
+            </div>
+
+            {/* View code at bottom of sidebar */}
+            <div className="border-t border-[#181818] p-3 shrink-0">
+              <button
+                onClick={() => setShowCode((s) => !s)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all cursor-pointer ${
+                  showCode
+                    ? "bg-[#1d1d1d] text-[#c8c8c8]"
+                    : "text-[#666] hover:text-[#aaa] hover:bg-[#141414]"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Code2 size={13} />
+                  {showCode ? "Hide code" : "View code"}
+                </div>
+                {showCode ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              </button>
+            </div>
           </div>
         </div>
       )}
